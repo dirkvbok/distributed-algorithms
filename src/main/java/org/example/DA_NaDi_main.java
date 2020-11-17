@@ -3,6 +3,10 @@ package org.example;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 
+/**
+ * The main class creates all the processes of the distributed algorithm
+ * that will run on a single host.
+ */
 public class DA_NaDi_main {
     public static void main( String[] args ) {
         System.out.println( "Hello World!" );
