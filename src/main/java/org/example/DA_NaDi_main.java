@@ -9,7 +9,6 @@ import java.rmi.RemoteException;
  */
 public class DA_NaDi_main {
     public static void main( String[] args ) {
-        System.out.println( "Hello World!" );
 
         //Create and install a security manager
         if (System.getSecurityManager() == null) {
