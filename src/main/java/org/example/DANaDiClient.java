@@ -12,7 +12,7 @@ public class DANaDiClient {
         String host = (args.length < 1) ? null : args[0];
         try {
             Registry registry = LocateRegistry.getRegistry(host);
-            DANaDiRMIInterface stub = (DANaDiRMIInterface) registry.lookup("Hello");
+            DANaDiRMIInterface stub = (DANaDiRMIInterface) registry.lookup("rmi://localhost:1099/remote-object");
             String response = stub.sayHello();
             System.out.println("response: " + response);
         } catch (Exception e) {

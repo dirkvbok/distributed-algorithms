@@ -29,7 +29,7 @@ public class DANaDiServer implements DANaDiRMIInterface {
 
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("Hello", stub);
+            registry.rebind("rmi://localhost:1099/remote-object", stub);
 
             System.err.println("Server ready");
         } catch (Exception e) {
