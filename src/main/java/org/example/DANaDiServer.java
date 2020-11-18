@@ -1,5 +1,6 @@
 package org.example;
 
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -20,11 +21,14 @@ public class DANaDiServer implements DANaDiRMIInterface {
     public static void main(String args[]) {
 
         try {
+            // Create and install a security manager
+            if (System.getSecurityManager() == null) {System.setSecurityManager(new RMISecurityManager());}
+
             DANaDiServer obj = new DANaDiServer();
             DANaDiRMIInterface stub = (DANaDiRMIInterface) UnicastRemoteObject.exportObject(obj, 0);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.createRegistry(1099);
             registry.rebind("Hello", stub);
 
             System.err.println("Server ready");
