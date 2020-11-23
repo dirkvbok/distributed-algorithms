@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 /**
  * The remote algorithm class implements the remote interface,
@@ -12,10 +13,42 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class DANaDiServer implements DANaDiRMIInterface {
 
+
+    /**
+     * Variables
+     */
+    private ArrayList<Integer> V;
+    String m = "";
+
     public DANaDiServer() {}
 
     public String sayHello() {
         return "Hello, world!";
+    }
+
+    @Override public int registerClient() throws RemoteException {
+        this.V.add(0);
+        return V.size() - 1;
+    }
+
+    /**
+     *
+     * @param m
+     * @param vSender
+     * @return
+     * @throws RemoteException
+     */
+    @Override public String broadcastMessage(String m, int[] vSender) throws RemoteException {
+
+        return "";
+    }
+
+    @Override public String receiveMessage(String m, int[] vSender) throws RemoteException {
+        return m;
+    }
+
+    @Override public String deliverMessage(String m) throws RemoteException {
+        return m;
     }
 
     public static void main(String args[]) {
