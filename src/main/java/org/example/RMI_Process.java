@@ -6,8 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 /**
  * The remote algorithm class implements the remote interface,
@@ -18,38 +17,84 @@ public class RMI_Process implements RMI_Interface {
     private Random random = new Random();
     private int[] V = new int[3];
     private int index;
+    private List<Message> buffer = new ArrayList<>();
 
     public RMI_Process(int index) {
         this.index = index;
     }
 
     @Override
-    public void broadcast(String m, int[] V) throws InterruptedException, RemoteException, NotBoundException {
+    public void broadcast(String m) throws InterruptedException, RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(1099);
         System.out.println("Broadcasting message [" + m + "]");
+        V[index]++;
 
         for (int i = 0; i < 3; i++) {
             if (i != index) {
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
-                stub.receive(m, V);
+                stub.receive(new Message(m, V, index));
             }
         }
     }
 
     @Override
-    public void receive(String m, int[] V) throws RemoteException, InterruptedException {
-        System.out.println(toString(V));
-        
+    public void receive(Message message) throws RemoteException, InterruptedException {
+        if (deliveryCondition(message)) {
+            deliver(message);
 
-
+            // While there are deliverable messages in buffer:
+            while(nextDeliverableMessage() != null) {
+                deliver(Objects.requireNonNull(nextDeliverableMessage()));
+            }
+        } else {
+            buffer.add(message);
+            System.out.println("in buffer of process " + index + ": " + message.toString());
+        }
     }
 
     @Override
-    public void deliver(String m) throws RemoteException, InterruptedException {
-
+    public void deliver(Message message) throws RemoteException, InterruptedException {
+        V[message.senderIndex]++;
+        System.out.println("Deliver message [" + message.toString()+ "] at process " + index);
+        buffer.remove(message);
     }
 
-    private String toString(int[] vectorClock) {
+    /**
+     * Get next deliverable message, null if none.
+     * @return next deliverable message
+     */
+    private Message nextDeliverableMessage() {
+        for (Message m : buffer) {
+            if (deliveryCondition(m)) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if message can be delivered.
+     * @param message message to be delivered
+     * @return true if message can be delivered
+     */
+    private boolean deliveryCondition(Message message) {
+        int[] myV = V.clone();
+        myV[message.senderIndex]++;
+
+        for (int i = 0; i < message.V.length; i++) {
+            if (myV[i] < message.V[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * String representation of vector clock [i, j, k].
+     * @param vectorClock vector clock array
+     * @return string representation of vector clock
+     */
+    private String vectorClockToString(int[] vectorClock) {
         String result = "[";
         for (int i = 0; i < vectorClock.length; i++) {
             if (i != vectorClock.length - 1) {

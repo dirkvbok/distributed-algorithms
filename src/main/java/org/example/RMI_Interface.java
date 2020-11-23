@@ -9,10 +9,10 @@ import java.rmi.RemoteException;
  */
 public interface RMI_Interface extends Remote {
 
-    void broadcast(String m, int[] V) throws RemoteException, InterruptedException, NotBoundException;
+    void broadcast(String m) throws RemoteException, InterruptedException, NotBoundException;
 
-    void receive(String m, int[] V) throws RemoteException, InterruptedException;
+    void receive(Message message) throws RemoteException, InterruptedException;
 
-    void deliver(String m) throws RemoteException, InterruptedException;
+    void deliver(Message message) throws RemoteException, InterruptedException;
 
 }
