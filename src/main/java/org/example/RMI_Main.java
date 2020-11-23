@@ -1,22 +1,13 @@
 package org.example;
 
 import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
-/**
- * The remote algorithm class implements the remote interface,
- * in which the actual work of a single process of the distributed algorithm is performed.
- */
-public class DANaDiServer implements DANaDiRMIInterface {
+public class RMI_Main {
 
-    public DANaDiServer() {}
-
-    public String sayHello() {
-        return "Hello, world!";
-    }
 
     public static void main(String args[]) {
 
@@ -24,17 +15,24 @@ public class DANaDiServer implements DANaDiRMIInterface {
             // Create and install a security manager
             if (System.getSecurityManager() == null) {System.setSecurityManager(new RMISecurityManager());}
 
-            DANaDiServer obj = new DANaDiServer();
-            DANaDiRMIInterface stub = (DANaDiRMIInterface) UnicastRemoteObject.exportObject(obj, 0);
-
             // Bind the remote object's stub in the registry
             Registry registry = LocateRegistry.createRegistry(1099);
-            registry.rebind("rmi://localhost:1099/remote-object", stub);
 
-            System.err.println("Server ready");
+
+            ArrayList<RMI_Process> processes = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                RMI_Process process = new RMI_Process(i);
+                RMI_Interface stub = (RMI_Interface) UnicastRemoteObject.exportObject(process, 0);
+                registry.bind("rmi://localhost:1099/process-" + i, stub);
+                processes.add(process);
+            }
+
+            processes.get(0).broadcast("hoi", new int[3]);
+
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
         }
     }
+
 }
