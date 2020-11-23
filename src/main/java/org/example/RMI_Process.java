@@ -34,7 +34,7 @@ public class RMI_Process implements RMI_Interface {
                 Thread.sleep(random.nextInt(1000));
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
                 Message message = new Message(m, V, index);
-                System.out.println("Broadcasting " + message.toString() + "at process " + index);
+                System.out.println("Broadcasting " + message.toString() + " at process " + index);
                 stub.receive(message);
             }
         }
