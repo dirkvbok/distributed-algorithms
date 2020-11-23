@@ -34,7 +34,7 @@ public class RMI_Process implements RMI_Interface {
                 Thread.sleep(random.nextInt(1000));
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
                 Message message = new Message(m, V, index);
-                System.out.println("Broadcasting message " + message.toString() + "at process " + index);
+                System.out.println("Broadcasting " + message.toString() + "at process " + index);
                 stub.receive(message);
             }
         }
@@ -42,7 +42,7 @@ public class RMI_Process implements RMI_Interface {
 
     @Override
     public void receive(Message message) throws RemoteException, InterruptedException {
-        System.out.println("Receive message " + message.toString() + " at process " + index);
+        System.out.println("Receive " + message.toString() + " at process " + index);
         if (deliveryCondition(message)) {
             deliver(message);
 
@@ -52,15 +52,15 @@ public class RMI_Process implements RMI_Interface {
             }
         } else {
             buffer.add(message);
-            System.out.println("Buffer add message " + message.toString() + " at process " + index);
+            System.out.println("Buffer add " + message.toString() + " at process " + index);
         }
     }
 
     @Override
     public void deliver(Message message) throws RemoteException, InterruptedException {
         V[message.senderIndex]++;
-        System.out.println("Deliver message " + message.toString()+ " at process " + index);
         buffer.remove(message);
+        System.out.println("Deliver " + message.toString()+ " at process " + index);
     }
 
     /**
@@ -99,15 +99,15 @@ public class RMI_Process implements RMI_Interface {
      * @return string representation of vector clock
      */
     private String vectorClockToString(int[] vectorClock) {
-        String result = "[";
+        StringBuilder result = new StringBuilder("[");
         for (int i = 0; i < vectorClock.length; i++) {
             if (i != vectorClock.length - 1) {
-                result += vectorClock[i] + ", ";
+                result.append(vectorClock[i]).append(", ");
             } else {
-                result += vectorClock[i] + "]";
+                result.append(vectorClock[i]).append("]");
             }
         }
-        return result;
+        return result.toString();
     }
 
 }

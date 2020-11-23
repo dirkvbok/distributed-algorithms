@@ -12,8 +12,6 @@ import java.util.Random;
 public class RMI_Main {
 
     private static Random random = new Random();
-    private static int[] realV = new int[3];
-
 
     public static void main(String args[]) {
 
@@ -52,7 +50,7 @@ public class RMI_Main {
 
 
                 // Test case 2
-                
+
 
                 // Test case 3
 
@@ -73,7 +71,6 @@ public class RMI_Main {
     }
 
     private static void broadcast(String m, int index, ArrayList<RMI_Process> processes) throws InterruptedException, RemoteException, NotBoundException {
-        Thread.sleep(random.nextInt(2000));
         System.out.println("Sending message [" + m + "] from main");
         processes.get(index).broadcast(m);
     }
