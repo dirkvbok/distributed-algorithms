@@ -59,7 +59,7 @@ public class RMI_Process implements RMI_Interface {
     @Override
     public void deliver(Message message) throws RemoteException, InterruptedException {
         V[message.senderIndex]++;
-        System.out.println("Deliver message [" + message.toString()+ "] at process " + index);
+        System.out.println("Deliver message " + message.toString()+ " at process " + index);
         buffer.remove(message);
     }
 
