@@ -25,9 +25,8 @@ public class RMI_Process implements RMI_Interface {
 
     @Override
     public void broadcast(String m, int[] V) throws InterruptedException, RemoteException, NotBoundException {
-        V[index]++;
-
         Registry registry = LocateRegistry.getRegistry(1099);
+        System.out.println("Broadcasting message [" + m + "]");
 
 //        Thread.sleep(random.nextInt(2000));
 //        System.out.println(m);
@@ -37,7 +36,6 @@ public class RMI_Process implements RMI_Interface {
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
                 stub.receive(m, V);
             }
-
         }
 
     }
