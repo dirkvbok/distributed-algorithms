@@ -26,19 +26,23 @@ public class RMI_Process implements RMI_Interface {
     @Override
     public void broadcast(String m) throws InterruptedException, RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(1099);
-        System.out.println("Broadcasting message [" + m + "]");
         V[index]++;
 
         for (int i = 0; i < 3; i++) {
             if (i != index) {
+                // Random message delay between 0 - 1 seconds
+                Thread.sleep(random.nextInt(1000));
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
-                stub.receive(new Message(m, V, index));
+                Message message = new Message(m, V, index);
+                System.out.println("Broadcasting message " + message.toString() + "at process " + index);
+                stub.receive(message);
             }
         }
     }
 
     @Override
     public void receive(Message message) throws RemoteException, InterruptedException {
+        System.out.println("Receive message " + message.toString() + " at process " + index);
         if (deliveryCondition(message)) {
             deliver(message);
 
@@ -48,7 +52,7 @@ public class RMI_Process implements RMI_Interface {
             }
         } else {
             buffer.add(message);
-            System.out.println("in buffer of process " + index + ": " + message.toString());
+            System.out.println("Buffer add message " + message.toString() + " at process " + index);
         }
     }
 

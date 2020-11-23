@@ -54,7 +54,7 @@ public class RMI_Main {
 
     private static void broadcast(String m, int index, ArrayList<RMI_Process> processes) throws InterruptedException, RemoteException, NotBoundException {
         Thread.sleep(random.nextInt(2000));
-        System.out.println("Sending message [" + m + "] from process " + index);
+        System.out.println("Sending message [" + m + "] from main");
         processes.get(index).broadcast(m);
     }
 
