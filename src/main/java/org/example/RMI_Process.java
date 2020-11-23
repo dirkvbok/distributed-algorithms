@@ -28,21 +28,20 @@ public class RMI_Process implements RMI_Interface {
         Registry registry = LocateRegistry.getRegistry(1099);
         System.out.println("Broadcasting message [" + m + "]");
 
-//        Thread.sleep(random.nextInt(2000));
-//        System.out.println(m);
-
         for (int i = 0; i < 3; i++) {
             if (i != index) {
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
                 stub.receive(m, V);
             }
         }
-
     }
 
     @Override
     public void receive(String m, int[] V) throws RemoteException, InterruptedException {
         System.out.println(toString(V));
+        
+
+
     }
 
     @Override

@@ -42,7 +42,6 @@ public class RMI_Main {
                 broadcast("m7", 0, processes);
                 broadcast("m8", 1, processes);
                 broadcast("m9", 2, processes);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
