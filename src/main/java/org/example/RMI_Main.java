@@ -33,6 +33,13 @@ public class RMI_Main {
             }
 
             try {
+                // Program should:
+                //  - record for any two broadcasts whether one happens before the other
+                //  - record all receive events in all processes
+                //  - check the causal ordering
+
+
+                // Test case 1
                 broadcast("m1", 0, processes);
                 broadcast("m2", 1, processes);
                 broadcast("m3", 2, processes);
@@ -42,6 +49,19 @@ public class RMI_Main {
                 broadcast("m7", 0, processes);
                 broadcast("m8", 1, processes);
                 broadcast("m9", 2, processes);
+
+
+                // Test case 2
+                
+
+                // Test case 3
+
+
+                // Test case 4
+
+
+                // Test case x
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
