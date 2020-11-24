@@ -15,7 +15,7 @@ public class Message implements Serializable {
     }
 
     public String toString() {
-        return "{ message: " + m + ", V: [" + V[0] + "," + V[1] + "," + V[2] + "], senderIndex: " + senderIndex + " }";
+        return "{ message: " + m + ", V: [" + V[0] + "," + V[1] + "," + V[2] + "] }";
     }
 }
 

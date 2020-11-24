@@ -11,8 +11,6 @@ import java.util.Random;
 
 public class RMI_Main {
 
-    private static Random random = new Random();
-
     public static void main(String args[]) {
 
         try {
@@ -36,29 +34,26 @@ public class RMI_Main {
                 //  - record all receive events in all processes
                 //  - check the causal ordering
 
-
                 // Test case 1
-                broadcast("m1", 0, processes);
-                broadcast("m2", 1, processes);
-                broadcast("m3", 2, processes);
-                broadcast("m4", 0, processes);
-                broadcast("m5", 1, processes);
-                broadcast("m6", 2, processes);
-                broadcast("m7", 0, processes);
-                broadcast("m8", 1, processes);
-                broadcast("m9", 2, processes);
-
+//                broadcast("m1", 0, processes);
+//                Thread.sleep(2000);
+//                broadcast("m2", 0, processes);
 
                 // Test case 2
-
+//                broadcast("m1", 0, processes);
+//                Thread.sleep(2000);
+//                broadcast("m2", 1, processes);
+//                Thread.sleep(2000);
+//                broadcast("m3", 0, processes);
 
                 // Test case 3
-
-
-                // Test case 4
-
-
-                // Test case x
+                broadcast("m1", 0, processes);
+                Thread.sleep(2000);
+                broadcast("m2", 1, processes);
+                Thread.sleep(2000);
+                broadcast("m3", 2, processes);
+                Thread.sleep(2000);
+                broadcast("m4", 1, processes);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -71,7 +66,6 @@ public class RMI_Main {
     }
 
     private static void broadcast(String m, int index, ArrayList<RMI_Process> processes) throws InterruptedException, RemoteException, NotBoundException {
-        System.out.println("Sending message [" + m + "] from main");
         processes.get(index).broadcast(m);
     }
 

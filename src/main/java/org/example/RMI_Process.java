@@ -6,6 +6,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -24,25 +26,46 @@ public class RMI_Process implements RMI_Interface {
     }
 
     @Override
-    public void broadcast(String m) throws InterruptedException, RemoteException, NotBoundException {
+    public void broadcast(String m) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(1099);
         V[index]++;
 
         for (int i = 0; i < 3; i++) {
             if (i != index) {
-                // Random message delay between 0 - 1 seconds
-                Thread.sleep(random.nextInt(1000));
                 RMI_Interface stub = (RMI_Interface) registry.lookup("rmi://localhost:1099/process-" + i);
-                Message message = new Message(m, V, index);
-                System.out.println("Broadcasting " + message.toString() + " at process " + index);
-                stub.receive(message);
+                Message message = new Message(m, V.clone(), index);
+                String timeStamp = new SimpleDateFormat("HH.mm.ss.SSS").format(new Timestamp(System.currentTimeMillis()));
+                System.out.println("[" + timeStamp + "] [p" + index + "] Broadcasting to [p" + i + "] " + message.toString());
+                send(message, stub);
             }
         }
     }
 
+    private void send(final Message message, final RMI_Interface stub) {
+        new Thread()
+        {
+            public void run() {
+                // Random message delay between 0 - 10 seconds
+                try {
+                    Thread.sleep(random.nextInt(10000));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    stub.receive(message);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     @Override
     public void receive(Message message) throws RemoteException, InterruptedException {
-        System.out.println("Receive " + message.toString() + " at process " + index);
+        String timeStamp = new SimpleDateFormat("HH.mm.ss.SSS").format(new Timestamp(System.currentTimeMillis()));
+        System.out.println("[" + timeStamp + "] [p" + index + "] Receive " + message.toString() + " my V: " + vectorClockToString(V));
         if (deliveryCondition(message)) {
             deliver(message);
 
@@ -52,15 +75,17 @@ public class RMI_Process implements RMI_Interface {
             }
         } else {
             buffer.add(message);
-            System.out.println("Buffer add " + message.toString() + " at process " + index);
+            timeStamp = new SimpleDateFormat("HH.mm.ss.SSS").format(new Timestamp(System.currentTimeMillis()));
+            System.out.println("[" + timeStamp + "] [p" + index + "] Buffer add " + message.toString());
         }
     }
 
     @Override
-    public void deliver(Message message) throws RemoteException, InterruptedException {
+    public void deliver(Message message) {
         V[message.senderIndex]++;
         buffer.remove(message);
-        System.out.println("Deliver " + message.toString()+ " at process " + index);
+        String timeStamp = new SimpleDateFormat("HH.mm.ss.SSS").format(new Timestamp(System.currentTimeMillis()));
+        System.out.println("[" + timeStamp + "] [p" + index + "] Deliver " + message.toString() + " my V: " + vectorClockToString(V));
     }
 
     /**
