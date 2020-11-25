@@ -1,11 +1,9 @@
-package org.example;
+package org.example.lab1;
 
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,9 +51,7 @@ public class RMI_Process implements RMI_Interface {
                 }
                 try {
                     stub.receive(message);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (RemoteException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -89,19 +85,6 @@ public class RMI_Process implements RMI_Interface {
     }
 
     /**
-     * Get next deliverable message, null if none.
-     * @return next deliverable message
-     */
-    private Message nextDeliverableMessage() {
-        for (Message m : buffer) {
-            if (deliveryCondition(m)) {
-                return m;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Check if message can be delivered.
      * @param message message to be delivered
      * @return true if message can be delivered
@@ -116,6 +99,19 @@ public class RMI_Process implements RMI_Interface {
             }
         }
         return true;
+    }
+
+    /**
+     * Get next deliverable message, null if none.
+     * @return next deliverable message
+     */
+    private Message nextDeliverableMessage() {
+        for (Message m : buffer) {
+            if (deliveryCondition(m)) {
+                return m;
+            }
+        }
+        return null;
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.lab1;
 
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -7,7 +7,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class RMI_Main {
 
