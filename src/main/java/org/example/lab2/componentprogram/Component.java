@@ -12,9 +12,8 @@ import java.rmi.RemoteException;
   private String downstream_neighbor;
 
 
-  public Component(int tid, String upstream_neighbor, String downstream_neighbor ) {
+  public Component(int tid, String downstream_neighbor ) {
     this.tid = tid;
-    this.upstream_neighbor = upstream_neighbor;
     this.downstream_neighbor = downstream_neighbor;
   }
 
