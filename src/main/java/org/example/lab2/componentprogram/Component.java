@@ -1,17 +1,21 @@
-package org.example.lab2;
+package org.example.lab2.componentprogram;
 
 import java.rmi.RemoteException;
 
-public class Component implements RMI_Interface2 {
+ class Component implements RMI_Interface2 {
   private int tid;
   private int ntid;
   private int nntid;
   private boolean active;
   private int port;
+  private String upstream_neighbor;
+  private String downstream_neighbor;
 
-  public Component(int tid, int port) {
+
+  public Component(int tid, String upstream_neighbor, String downstream_neighbor ) {
     this.tid = tid;
-    this.port = port;
+    this.upstream_neighbor = upstream_neighbor;
+    this.downstream_neighbor = downstream_neighbor;
   }
 
   @Override public int retrieve_tid() throws RemoteException {
@@ -54,5 +58,13 @@ public class Component implements RMI_Interface2 {
 
      //return status
      return active;
+  }
+
+  @Override public void start_election() throws RemoteException {
+
+  }
+
+  @Override public String test_hello_world() throws RemoteException {
+    return "Hello world!";
   }
 }

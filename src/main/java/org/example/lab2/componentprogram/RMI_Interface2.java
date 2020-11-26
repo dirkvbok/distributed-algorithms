@@ -1,4 +1,4 @@
-package org.example.lab2;
+package org.example.lab2.componentprogram;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -20,5 +20,9 @@ public interface RMI_Interface2 extends Remote {
   void update_nntid(int ntid) throws RemoteException;
 
   boolean check_condition() throws RemoteException;
+
+  void start_election() throws RemoteException;
+
+  String test_hello_world() throws  RemoteException;
 
 }
