@@ -1,17 +1,16 @@
 package org.example.lab2.componentprogram;
 
-import com.sun.org.apache.xerces.internal.util.ShadowedSymbolTable;
-import org.example.lab2.componentprogram.Component;
-import org.example.lab2.componentprogram.RMI_Interface2;
 
 import java.rmi.RMISecurityManager;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.net.InetAddress;
 
 public class RMI_Main2 {
+  //  public static String host_name = "Naqib";
+  //  public static String host_ip = "80.114.173.96"; //naqib is host
+  //  public static String other_ip = "86.94.144.88"; //dirk is the other
+  //  public static Registry registry;
 
   public static List<Component> components;
   public static String host_ip = "80.114.173.96"; //Naqib is the host
@@ -22,13 +21,51 @@ public class RMI_Main2 {
   public static int[] main2_ids = {6, 2, 5, 12};
 
 
-//  public static String host_name = "Naqib";
-//  public static String host_ip = "80.114.173.96"; //naqib is host
-//  public static String other_ip = "86.94.144.88"; //dirk is the other
-//  public static Registry registry;
-
   public static void main(String args[]){
 
+    for(int i = 0; i< 4; i++){
+
+      try{
+
+        //create and install a security manager
+        if(System.getSecurityManager() == null) {
+          System.setSecurityManager(new RMISecurityManager());
+        }
+
+        // if its the last component and its neighbor is from different process
+        if(i == 3){
+          int port_me = main1_ports[i];
+          int port_neighbor = main1_ports[0];
+
+          //execute external program
+          Runtime.getRuntime().exec("rmiregistry " + Integer.toString(port_me));
+          Registry registry = LocateRegistry.createRegistry(port_me);
+          String downstream_neighbor = "rmi://" + host_ip + ":" + port_neighbor;
+          Component component = new Component(main2_ids[i], downstream_neighbor);
+          registry.rebind("rmi://" + other_ip + port_me + "/component", component);        //todo: als dit niet lukt, probeer met Naming.rebind
+          components.add(component);
+
+        } else {
+          int port_me = main1_ports[i];
+          int port_neighbor = main2_ports[i+1];
+
+          //execute external program
+          Runtime.getRuntime().exec("rmiregistry " + Integer.toString(port_me));
+          Registry registry = LocateRegistry.createRegistry(port_me);
+          String downstream_neighbor = "rmi://" + other_ip + ":" + port_neighbor;
+          Component component = new Component(main2_ids[i], downstream_neighbor);
+          registry.rebind("rmi://" + other_ip + port_me + "/component", component);        //todo: als dit niet lukt, probeer met Naming.rebind
+          components.add(component);
+        }
+
+      } catch (Exception e){
+        e.printStackTrace();
+      }
+
+
+      //todo: give command to execute algorithm
+
+    }
 
 
 
