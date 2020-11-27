@@ -10,9 +10,9 @@ class Component implements RMI_Interface2 {
   private int ntid;
   private int nntid;
   private boolean active;
-  private String rmi_name_d_neighbor;
-  private String rmi_name_me;
-  private Registry registry;
+  private final String rmi_name_d_neighbor;
+  public final String rmi_name_me;
+  private final Registry registry;
 
   public Component(String host_ip, int tid, String rmi_name_me, String rmi_name_d_neighbor) throws RemoteException {
     this.tid = tid;
@@ -40,18 +40,19 @@ class Component implements RMI_Interface2 {
       this.ntid = ntid;
       stub.retrieve_nntid(Math.max(tid, ntid));
     } else {
-      stub.retrieve_nntid(ntid);
+      stub.retrieve_ntid(ntid);
     }
   }
 
-  @Override public void retrieve_nntid(int nntid) throws RemoteException {
+  @Override public void retrieve_nntid(int nntid) throws RemoteException, NotBoundException {
     System.out.println("[" + rmi_name_me + "] retrieves nntid");
-    this.nntid = nntid;
-  }
+    RMI_Interface2 stub = (RMI_Interface2) registry.lookup(rmi_name_d_neighbor);
 
-  @Override
-  public void update_tid_and_check_condition() throws RemoteException {
-    boolean condition = this.check_condition();
+    if (active) {
+      this.nntid = nntid;
+    } else {
+      stub.retrieve_nntid(nntid);
+    }
   }
 
   @Override public boolean is_active() throws RemoteException {
@@ -72,5 +73,8 @@ class Component implements RMI_Interface2 {
      return active;
   }
 
-
+  @Override
+  public int get_tid() throws RemoteException {
+    return tid;
+  }
 }

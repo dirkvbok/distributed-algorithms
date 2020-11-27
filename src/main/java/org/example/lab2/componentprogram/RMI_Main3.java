@@ -22,8 +22,9 @@ public class RMI_Main3 {
     public static String other_ip = "192.168.1.100";   // Naqib
 
     public static boolean i_am_host = true;
-
+    public static Registry registry;
     public static List<Component> components = new ArrayList<>();
+    public static List<Component> components_to_remove = new ArrayList<>();
     public static int COMPONENT_START_PORT = 2000;
 
     public static void main(String args[]) throws IOException {
@@ -34,7 +35,11 @@ public class RMI_Main3 {
                 System.setSecurityManager(new RMISecurityManager());
             }
 
-            Registry registry = LocateRegistry.createRegistry(1099);
+            if (i_am_host) {
+                registry = LocateRegistry.createRegistry(1099);
+            } else {
+                registry = LocateRegistry.getRegistry(other_ip, 1099);
+            }
 
             int n = Integer.parseInt(args[0]);
             for (int i = 1; i < n+1; i++) {
@@ -56,16 +61,36 @@ public class RMI_Main3 {
                 components.add(component);
             }
 
-            for (Component c : components) {
-                c.send_tid();
+            // Rounds loop
+            int round_count = 1;
+            while(components.size() > 1) {
+                // one round
+                System.out.println("Round " + round_count);
+                for (Component c : components) {
+                    c.send_tid();
+                }
+
+                // Wait until every process has received (n)ntid's
+                Thread.sleep(5000);
+
+                // end round
+                System.out.println("tid's:");
+                for (Component c : components) {
+                    System.out.println(c.get_tid());
+
+                    boolean active = c.check_condition();
+                    if (!active) {
+                        components_to_remove.add(c);
+                    }
+                }
+
+                components.removeAll(components_to_remove);
+                System.out.println();
+                round_count++;
             }
 
-
-            Thread.sleep(10000);
-            for (Component c : components) {
-                c.update_tid_and_check_condition();
-                System.out.println(c.is_active());
-            }
+            RMI_Interface2 stub = (RMI_Interface2) registry.lookup(components.get(0).rmi_name_me);
+            System.out.println("winner: " + stub.get_tid());
 
 
         } catch (Exception e) {
