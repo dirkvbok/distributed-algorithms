@@ -1,12 +1,9 @@
 package org.example.lab2.componentprogram;
 
 import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,13 +11,12 @@ import java.util.Scanner;
 public class RMI_Server_Main {
 
     public static Registry registry;
-    public static List<RMI_Interface2> components = new ArrayList<>();
-    public static List<RMI_Interface2> components_to_remove = new ArrayList<>();
+    public static List<RMI_Interface> components = new ArrayList<>();
+    public static List<RMI_Interface> components_to_remove = new ArrayList<>();
 
     public static void main(String args[]) throws IOException {
 
         try {
-
             //create and install a security manager
             if (System.getSecurityManager() == null) {
                 System.setSecurityManager(new RMISecurityManager());
@@ -35,22 +31,16 @@ public class RMI_Server_Main {
 
             while(!start_election) {
                 String input = userInput.nextLine();
-                System.out.println("here1");
-
-                System.out.println("input is '" + input + "'");
 
                 if (!input.isEmpty()) {
-                    System.out.println("here2");
                     start_election = true;
                     userInput.close();
                 }
             }
 
-            System.out.println("here3");
-
             String[] rmi_list = registry.list();
             for(String rmi_name : rmi_list) {
-                RMI_Interface2 stub = (RMI_Interface2) registry.lookup(rmi_name);
+                RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name);
                 components.add(stub);
             }
 
@@ -60,7 +50,7 @@ public class RMI_Server_Main {
 
                 // one round
                 System.out.println("Round " + round_count);
-                for (RMI_Interface2 c : components) {
+                for (RMI_Interface c : components) {
                     // send_tid starts the election for every component
                     c.send_tid();
                 }
@@ -70,7 +60,7 @@ public class RMI_Server_Main {
 
                 // end round
                 System.out.println("tid's:");
-                for (RMI_Interface2 c : components) {
+                for (RMI_Interface c : components) {
                     System.out.println(c.get_tid());
 
                     boolean active = c.check_condition();
@@ -86,7 +76,7 @@ public class RMI_Server_Main {
             }
 
             // Last remaining component is the winner
-            RMI_Interface2 stub = (RMI_Interface2) registry.lookup(components.get(0).get_rmi_name());
+            RMI_Interface stub = (RMI_Interface) registry.lookup(components.get(0).get_rmi_name());
             System.out.println("winner: " + stub.get_tid());
 
         } catch(Exception e) {

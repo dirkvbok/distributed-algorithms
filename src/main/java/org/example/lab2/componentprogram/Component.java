@@ -4,9 +4,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 
-class Component implements RMI_Interface2 {
+public class Component implements RMI_Interface {
   private int tid;
   private int ntid;
   private int nntid;
@@ -28,14 +27,14 @@ class Component implements RMI_Interface2 {
   public void send_tid() throws RemoteException, NotBoundException {
     if (active) {
       System.out.println("[" + rmi_name_me + "] sends tid to [" + rmi_name_d_neighbor + "]");
-      RMI_Interface2 stub = (RMI_Interface2) registry.lookup(rmi_name_d_neighbor);
+      RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
       stub.retrieve_ntid(tid);
     }
   }
 
   @Override public void retrieve_ntid(int ntid) throws RemoteException, NotBoundException {
     System.out.println("[" + rmi_name_me + "] retrieves ntid");
-    RMI_Interface2 stub = (RMI_Interface2) registry.lookup(rmi_name_d_neighbor);
+    RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
 
     if (active) {
       this.ntid = ntid;
@@ -47,7 +46,7 @@ class Component implements RMI_Interface2 {
 
   @Override public void retrieve_nntid(int nntid) throws RemoteException, NotBoundException {
     System.out.println("[" + rmi_name_me + "] retrieves nntid");
-    RMI_Interface2 stub = (RMI_Interface2) registry.lookup(rmi_name_d_neighbor);
+    RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
 
     if (active) {
       this.nntid = nntid;
@@ -79,4 +78,5 @@ class Component implements RMI_Interface2 {
   public String get_rmi_name() throws RemoteException {
     return rmi_name_me;
   }
+
 }

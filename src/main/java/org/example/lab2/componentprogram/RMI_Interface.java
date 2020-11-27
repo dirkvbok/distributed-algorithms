@@ -4,7 +4,7 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface RMI_Interface2 extends Remote {
+public interface RMI_Interface extends Remote {
 
   int get_tid() throws RemoteException;
 
