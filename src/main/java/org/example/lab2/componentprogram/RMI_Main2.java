@@ -1,15 +1,19 @@
 package org.example.lab2.componentprogram;
 
 
+import org.example.lab1.RMI_Interface;
+
+import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class RMI_Main2 {
 
-  public static List<Component> components;
+  public static List<Component> components = new ArrayList<>();
   public static String host_ip = "80.114.173.96"; //Naqib is the host
   public static String other_ip = "86.94.144.88"; //Dirk is the other
   public static int[] main1_ports = {3111, 3116, 3114, 3120};
@@ -35,11 +39,12 @@ public class RMI_Main2 {
           int port_neighbor = main1_ports[0];
 
           //execute external program
-          Runtime.getRuntime().exec("rmiregistry " + Integer.toString(port_me));
+//          Runtime.getRuntime().exec("rmiregistry " + Integer.toString(port_me));
           Registry registry = LocateRegistry.createRegistry(port_me);
           String downstream_neighbor = "rmi://" + host_ip + ":" + port_neighbor;
           Component component = new Component(main2_ids[i], downstream_neighbor);
-          registry.rebind("rmi://" + other_ip + port_me + "/component", component);        //todo: als dit niet lukt, probeer met Naming.rebind
+          RMI_Interface2 stub = (RMI_Interface2) UnicastRemoteObject.exportObject(component, 0);
+          registry.rebind("rmi://" + other_ip + ":" + port_me + "/component", stub);        //todo: als dit niet lukt, probeer met Naming.rebind
           components.add(component);
 
         } else {
@@ -47,13 +52,18 @@ public class RMI_Main2 {
           int port_neighbor = main2_ports[i+1];
 
           //execute external program
-          Runtime.getRuntime().exec("rmiregistry " + Integer.toString(port_me));
+//          Runtime.getRuntime().exec("rmiregistry " + Integer.toString(port_me));
           Registry registry = LocateRegistry.createRegistry(port_me);
           String downstream_neighbor = "rmi://" + other_ip + ":" + port_neighbor;
           Component component = new Component(main2_ids[i], downstream_neighbor);
-          registry.rebind("rmi://" + other_ip + port_me + "/component", component);        //todo: als dit niet lukt, probeer met Naming.rebind
+          RMI_Interface2 stub = (RMI_Interface2) UnicastRemoteObject.exportObject(component, 0);
+          registry.rebind("rmi://" + other_ip + ":" + port_me + "/component", stub);        //todo: als dit niet lukt, probeer met Naming.rebind
           components.add(component);
         }
+
+        Registry registry_host = LocateRegistry.getRegistry(host_ip, main1_ports[0]);
+        RMI_Interface2 stub = (RMI_Interface2) registry_host.lookup("rmi://" + host_ip + ":" +  main1_ports[0] + "/component");
+        stub.test_hello_world();
 
       } catch (Exception e){
         e.printStackTrace();
@@ -61,10 +71,10 @@ public class RMI_Main2 {
 
     }
 
-    //while there are more than 1 components active -> perform election
-    while(components.size() != 1){
-      perform_election();
-    }
+//    //while there are more than 1 components active -> perform election
+//    while(components.size() != 1){
+//      perform_election();
+//    }
 
     System.out.println("the elected component is " + components.get(0));
 

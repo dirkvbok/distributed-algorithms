@@ -1,8 +1,9 @@
 package org.example.lab2.componentprogram;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 
- class Component implements RMI_Interface2 {
+ class Component implements RMI_Interface2, Serializable {
   private int tid;
   private int ntid;
   private int nntid;

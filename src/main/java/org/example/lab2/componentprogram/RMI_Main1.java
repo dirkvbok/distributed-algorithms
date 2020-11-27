@@ -12,7 +12,7 @@ public class RMI_Main1 {
 
   public static List<Component> components;
   public static String host_ip = "192.168.1.100"; //Naqib is the host
-  public static String other_ip = "86.94.144.88"; //todo DIRK: make this what is your private ipv4 number
+  public static String other_ip = "192.168.2.25"; // ip dirk
   public static int[] main1_ports = {3111, 3116, 3114, 3120};
   public static int[] main2_ports = {3112, 3115, 3119, 3123};
   public static int[] main1_ids = {3, 11, 4, 9};
