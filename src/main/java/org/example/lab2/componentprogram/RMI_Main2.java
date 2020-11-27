@@ -2,15 +2,12 @@ package org.example.lab2.componentprogram;
 
 
 import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 
 public class RMI_Main2 {
-  //  public static String host_name = "Naqib";
-  //  public static String host_ip = "80.114.173.96"; //naqib is host
-  //  public static String other_ip = "86.94.144.88"; //dirk is the other
-  //  public static Registry registry;
 
   public static List<Component> components;
   public static String host_ip = "80.114.173.96"; //Naqib is the host
@@ -21,7 +18,7 @@ public class RMI_Main2 {
   public static int[] main2_ids = {6, 2, 5, 12};
 
 
-  public static void main(String args[]){
+  public static void main(String args[]) throws RemoteException {
 
     for(int i = 0; i< 4; i++){
 
@@ -62,70 +59,60 @@ public class RMI_Main2 {
         e.printStackTrace();
       }
 
-
-      //todo: give command to execute algorithm
-
     }
 
+    //while there are more than 1 components active -> perform election
+    while(components.size() != 1){
+      perform_election();
+    }
+
+    System.out.println("the elected component is " + components.get(0));
+
+  }
+
+
+  //todo: we doen nog nergens lookup ofzo. als we de volgende component willen hebben moeten we eigenlijk lookup("rmi//"+host+":"+next port + "/component" doen ofzo
+  public static void perform_election() throws RemoteException {
+
+    //STEP 1: sends components tid to its downstream neighbor
+    for(int i = 0; i< components.size(); i++){
+
+      //handle last component -> set the first components ntid to last components tid
+      if(i == components.size() - 1){
+        components.get(0).update_ntid(components.get(i).retrieve_tid());
+      } else{
+        components.get(i+1).update_ntid(components.get(i).retrieve_tid());
+      }
+    }
+
+    //STEP 2: send max(tid, ntid) to its neighbor
+    for(int i = 0; i< components.size(); i++){
+
+      //handle last component -> set the first components ntid to last components tid
+      if(i == components.size() - 1){
+        components.get(0).update_nntid(Math.max(components.get(i).retrieve_tid(), components.get(i).retrieve_ntid()));
+      } else{
+        components.get(i+1).update_nntid(Math.max(components.get(i).retrieve_tid(), components.get(i).retrieve_ntid()));
+      }
+    }
+
+    //STEP 3: checks the condition and update status
+    for(int i = 0; i < components.size(); i++){
+      components.get(i).check_condition();
+    }
+
+    //STEP 4: remove the components that are inactive
+    for(int i=0; i< components.size(); i++){
+      if (!components.get(i).is_active()){
+        components.remove(i);
+      }
+    }
+
+    //STEP 5: re-create a ring with all the parts
+    //todo: refactor de code in de main zodat die in een aparte method komt "createRing" zodat we die shit hier weer aan kunnen roepen ofzo.
 
 
 
-//    try{
-//
-//      //create and install a security manager
-//      if(System.getSecurityManager() == null) {
-//        System.setSecurityManager(new RMISecurityManager());
-//      }
-//
-//      //create or get the registry
-//      if(host_name.equals("Naqib")){
-//        registry = LocateRegistry.createRegistry(1099);
-//        System.out.println("registry gegevens: " + registry.toString());
-//      } else {
-//        registry = LocateRegistry.getRegistry(other_ip, 1099);
-//      }
-//
-//      //create 4 unique tid
-//      Queue<Integer> q = new LinkedList<>();
-//      Random random = new Random();
-//      while(q.size() != 4){
-//        int possible_tid = random.nextInt(500);
-//        if(!q.contains(possible_tid)){
-//          q.add(possible_tid);
-//        }
-//      }
-//
-//      System.setProperty("java.rmi.server.hostname", "80.114.173.96");
-//
-//      //Create four components and add them to the registry (later each component will start process in a thread)
-//      ArrayList<Component> components = new ArrayList<>();
-//
-//      //first component
-//      Component first_component = new Component(q.remove(), "rmi://" + other_ip + ":1099/component-3", "rmi://" + host_ip + ":1099/component-1");
-//      RMI_Interface2 stub_first = (RMI_Interface2) UnicastRemoteObject.exportObject(first_component, 0);
-//      registry.rebind("rmi://" + host_ip + ":1099/component-0" , stub_first);
-//      components.add(first_component);
-//
-//      for (int i = 1; i < 3; i++){
-//        Component current_component = new Component(q.remove(), "rmi://" + host_ip + ":1099/component-" + (i-1),  "rmi://" + host_ip + ":1099/component-" + (i+1));
-//        RMI_Interface2 stub = (RMI_Interface2) UnicastRemoteObject.exportObject(current_component, 0);
-//        registry.rebind("rmi://" + host_ip + ":1099/component-" + i, stub);
-//        components.add(current_component);
-//      }
-//
-//      //last component
-//      Component last_component = new Component(q.remove(), "rmi://" + host_ip + ":1099/component-2", "rmi://" + other_ip + ":1099/component-0");
-//      RMI_Interface2 stub_last = (RMI_Interface2) UnicastRemoteObject.exportObject(last_component, 0);
-//      registry.rebind("rmi://" + host_ip + ":1099/component-3" , stub_last);
-//      components.add(last_component);
-//
-//
-//      System.out.println("done with server part");
-//
-//    } catch (Exception e){
-//      System.err.println("Server Exception: " + e.toString());
-//      e.printStackTrace();
-//    }
   }
 
 }

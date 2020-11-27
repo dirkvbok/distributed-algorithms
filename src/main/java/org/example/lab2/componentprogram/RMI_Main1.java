@@ -2,6 +2,7 @@ package org.example.lab2.componentprogram;
 
 import java.io.IOException;
 import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
@@ -61,29 +62,54 @@ public class RMI_Main1 {
       }
 
     }
+    //while there are more than 1 components active -> perform election
+    while(components.size() != 1){
+      perform_election();
+    }
 
-//    int[] main1_ids= new int[4];
-//    int[] main2_ids= new int[4];
-    //create 8 random unique ids
-//    Queue<Integer> q = new LinkedList<>();
-//    Random random = new Random();
-//    while(q.size() != 8){
-//      int possible_tid = random.nextInt(500);
-//      if(!q.contains(possible_tid)){
-//        q.add(possible_tid);
-//      }
-//    }
-//
-//    //add the even indexes to the first main list and the odds to the second list
-//    for(int i=0; i<8; i++){
-//      if((i%2) == 0){
-//        main1_ids[i] = q.remove();
-//      } else {
-//        main2_ids[i] = q.remove();
-//      }
-//    }
+    System.out.println("the elected component is " + components.get(0));
 
+  }
 
+  //todo: we doen nog nergens lookup ofzo. als we de volgende component willen hebben moeten we eigenlijk lookup("rmi//"+host+":"+next port + "/component" doen ofzo
+  public static void perform_election() throws RemoteException {
+
+    //STEP 1: sends components tid to its downstream neighbor
+    for(int i = 0; i< components.size(); i++){
+
+      //handle last component -> set the first components ntid to last components tid
+      if(i == components.size() - 1){
+        components.get(0).update_ntid(components.get(i).retrieve_tid());
+      } else{
+        components.get(i+1).update_ntid(components.get(i).retrieve_tid());
+      }
+    }
+
+    //STEP 2: send max(tid, ntid) to its neighbor
+    for(int i = 0; i< components.size(); i++){
+
+      //handle last component -> set the first components ntid to last components tid
+      if(i == components.size() - 1){
+        components.get(0).update_nntid(Math.max(components.get(i).retrieve_tid(), components.get(i).retrieve_ntid()));
+      } else{
+        components.get(i+1).update_nntid(Math.max(components.get(i).retrieve_tid(), components.get(i).retrieve_ntid()));
+      }
+    }
+
+    //STEP 3: checks the condition and update status
+    for(int i = 0; i < components.size(); i++){
+      components.get(i).check_condition();
+    }
+
+    //STEP 4: remove the components that are inactive
+    for(int i=0; i< components.size(); i++){
+      if (!components.get(i).is_active()){
+        components.remove(i);
+      }
+    }
+
+    //STEP 5: re-create a ring with all the active components
+    //todo: refactor de code in de main zodat die in een aparte method komt "createRing" zodat we die shit hier weer aan kunnen roepen ofzo.
 
 
 
