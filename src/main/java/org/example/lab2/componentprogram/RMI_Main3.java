@@ -99,6 +99,7 @@ public class RMI_Main3 {
             RMI_Interface2 stub = (RMI_Interface2) registry.lookup(components.get(0).rmi_name_me);
             System.out.println("winner: " + stub.get_tid());
 
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
