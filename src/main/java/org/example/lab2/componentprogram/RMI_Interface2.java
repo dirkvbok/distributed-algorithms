@@ -8,6 +8,8 @@ public interface RMI_Interface2 extends Remote {
 
   int get_tid() throws RemoteException;
 
+  String get_rmi_name() throws RemoteException;
+
   void send_tid() throws RemoteException, NotBoundException;
 
   void retrieve_ntid(int ntid) throws RemoteException, NotBoundException;

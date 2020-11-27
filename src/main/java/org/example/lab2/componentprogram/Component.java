@@ -4,6 +4,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 class Component implements RMI_Interface2 {
   private int tid;
@@ -72,5 +73,10 @@ class Component implements RMI_Interface2 {
   @Override
   public int get_tid() throws RemoteException {
     return tid;
+  }
+
+  @Override
+  public String get_rmi_name() throws RemoteException {
+    return rmi_name_me;
   }
 }
