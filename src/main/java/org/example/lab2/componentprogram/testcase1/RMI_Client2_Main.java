@@ -30,7 +30,7 @@ public class RMI_Client2_Main {
             registry = LocateRegistry.getRegistry(my_ip, 1099);
 
             int n = Integer.parseInt(args[0]);
-
+            System.out.println("Election participants:");
             for (int i = 1; i < n+1; i++) {
                 System.out.println(args[i]);
                 int id = Integer.parseInt(args[i]);
@@ -49,6 +49,7 @@ public class RMI_Client2_Main {
                 RMI_Interface stub = (RMI_Interface) UnicastRemoteObject.exportObject(component, 0);
                 registry.rebind(rmi_name_me, stub);
             }
+            System.out.println();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -26,14 +26,12 @@ public class Component implements RMI_Interface {
   @Override
   public void send_tid() throws RemoteException, NotBoundException {
     if (active) {
-      System.out.println("[" + rmi_name_me + "] sends tid to [" + rmi_name_d_neighbor + "]");
       RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
       stub.retrieve_ntid(tid);
     }
   }
 
   @Override public void retrieve_ntid(int ntid) throws RemoteException, NotBoundException {
-    System.out.println("[" + rmi_name_me + "] retrieves ntid");
     RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
 
     if (active) {
@@ -45,7 +43,6 @@ public class Component implements RMI_Interface {
   }
 
   @Override public void retrieve_nntid(int nntid) throws RemoteException, NotBoundException {
-    System.out.println("[" + rmi_name_me + "] retrieves nntid");
     RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
 
     if (active) {
@@ -56,8 +53,8 @@ public class Component implements RMI_Interface {
   }
 
   @Override public boolean check_condition() throws RemoteException {
+    System.out.println("[" + rmi_name_me + "] check_condition: ntid:" + ntid + " >= tid:" + tid + " && ntid:" + ntid + " >= nntid:" + nntid);
      if(ntid >= tid && ntid >= nntid){
-
        //update the tid
        tid = ntid;
      } else {
