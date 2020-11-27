@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RMI_Main3 {
+public class RMI_Component_Main {
 
     // My IP
     public static String my_ip = "192.168.2.25";    // Dirk
@@ -35,11 +35,8 @@ public class RMI_Main3 {
                 System.setSecurityManager(new RMISecurityManager());
             }
 
-            if (i_am_host) {
-                registry = LocateRegistry.createRegistry(1099);
-            } else {
-                registry = LocateRegistry.getRegistry(other_ip, 1099);
-            }
+            registry = LocateRegistry.getRegistry(my_ip, 1099);
+
 
             int n = Integer.parseInt(args[0]);
             for (int i = 1; i < n+1; i++) {
