@@ -55,18 +55,23 @@ public class RMI_Main3 {
                     rmi_name_d_neighbor = "rmi://" + my_ip + ":" + (COMPONENT_START_PORT + 1);
                 }
 
+                // Create components with link to host, its initial tid, its rmi name on the registry, and rmi name of neighbor
                 Component component = new Component(i_am_host ? my_ip : other_ip, id, rmi_name_me, rmi_name_d_neighbor);
                 RMI_Interface2 stub = (RMI_Interface2) UnicastRemoteObject.exportObject(component, 0);
                 registry.rebind(rmi_name_me, stub);
+
+                // TODO: retrieve components from other ip
                 components.add(component);
             }
 
             // Rounds loop
             int round_count = 1;
             while(components.size() > 1) {
+
                 // one round
                 System.out.println("Round " + round_count);
                 for (Component c : components) {
+                    // send_tid starts the election for every component
                     c.send_tid();
                 }
 
@@ -84,14 +89,15 @@ public class RMI_Main3 {
                     }
                 }
 
+                // Keep track of which components are in the next round
                 components.removeAll(components_to_remove);
                 System.out.println();
                 round_count++;
             }
 
+            // Last remaining component is the winner
             RMI_Interface2 stub = (RMI_Interface2) registry.lookup(components.get(0).rmi_name_me);
             System.out.println("winner: " + stub.get_tid());
-
 
         } catch (Exception e) {
             e.printStackTrace();

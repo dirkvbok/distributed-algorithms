@@ -14,8 +14,6 @@ public interface RMI_Interface2 extends Remote {
 
   void retrieve_nntid(int nntid) throws RemoteException, NotBoundException;
 
-  boolean is_active() throws  RemoteException;
-
   boolean check_condition() throws RemoteException;
 
 }

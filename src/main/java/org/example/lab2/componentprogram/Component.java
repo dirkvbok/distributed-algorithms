@@ -55,10 +55,6 @@ class Component implements RMI_Interface2 {
     }
   }
 
-  @Override public boolean is_active() throws RemoteException {
-    return this.active;
-  }
-
   @Override public boolean check_condition() throws RemoteException {
      if(ntid >= tid && ntid >= nntid){
 
