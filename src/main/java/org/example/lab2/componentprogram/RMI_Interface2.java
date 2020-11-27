@@ -1,28 +1,21 @@
 package org.example.lab2.componentprogram;
 
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RMI_Interface2 extends Remote {
 
-  int retrieve_tid() throws RemoteException;
+  void send_tid() throws RemoteException, NotBoundException;
 
-  int retrieve_ntid() throws RemoteException;
+  void retrieve_ntid(int ntid) throws RemoteException, NotBoundException;
 
-  int retrieve_nntid() throws RemoteException;
+  void retrieve_nntid(int nntid) throws RemoteException;
+
+  void update_tid_and_check_condition() throws RemoteException;
 
   boolean is_active() throws  RemoteException;
 
-  void update_tid(int tid) throws RemoteException;
-
-  void update_ntid(int ntid) throws RemoteException;
-
-  void update_nntid(int ntid) throws RemoteException;
-
   boolean check_condition() throws RemoteException;
-
-  void start_election() throws RemoteException;
-
-  String test_hello_world() throws  RemoteException;
 
 }
