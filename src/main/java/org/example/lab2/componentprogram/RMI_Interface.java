@@ -12,9 +12,9 @@ public interface RMI_Interface extends Remote {
 
   void send_tid() throws RemoteException, NotBoundException;
 
-  void retrieve_ntid(int ntid) throws RemoteException, NotBoundException;
+  void receive_ntid(int ntid) throws RemoteException, NotBoundException;
 
-  void retrieve_nntid(int nntid) throws RemoteException, NotBoundException;
+  void receive_nntid(int nntid) throws RemoteException, NotBoundException;
 
   boolean check_condition() throws RemoteException;
 

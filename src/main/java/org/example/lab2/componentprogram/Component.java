@@ -27,28 +27,28 @@ public class Component implements RMI_Interface {
   public void send_tid() throws RemoteException, NotBoundException {
     if (active) {
       RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
-      stub.retrieve_ntid(tid);
+      stub.receive_ntid(tid);
     }
   }
 
-  @Override public void retrieve_ntid(int ntid) throws RemoteException, NotBoundException {
+  @Override public void receive_ntid(int ntid) throws RemoteException, NotBoundException {
     RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
 
     if (active) {
       this.ntid = ntid;
-      stub.retrieve_nntid(Math.max(tid, ntid));
+      stub.receive_nntid(Math.max(tid, ntid));
     } else {
-      stub.retrieve_ntid(ntid);
+      stub.receive_ntid(ntid);
     }
   }
 
-  @Override public void retrieve_nntid(int nntid) throws RemoteException, NotBoundException {
+  @Override public void receive_nntid(int nntid) throws RemoteException, NotBoundException {
     RMI_Interface stub = (RMI_Interface) registry.lookup(rmi_name_d_neighbor);
 
     if (active) {
       this.nntid = nntid;
     } else {
-      stub.retrieve_nntid(nntid);
+      stub.receive_nntid(nntid);
     }
   }
 
