@@ -5,15 +5,16 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class Process_Main {
+public class ParticipantProcess_Main {
 
     public static void main(String args[]) throws IOException {
-        System.out.println("New process opened.");
+        System.out.println("New process opened with v = " + args[1]);
 
         Registry registry = LocateRegistry.getRegistry(1099);
         String rmi_name = "rmi://localhost/process-" + args[0];
-        Process process = new Process(rmi_name);
-        Process_Interface stub = (Process_Interface) UnicastRemoteObject.exportObject(process, 0);
+
+        ParticipantProcess participantProcess = new ParticipantProcess(rmi_name, Integer.parseInt(args[1]));
+        ParticipantProcess_Interface stub = (ParticipantProcess_Interface) UnicastRemoteObject.exportObject(participantProcess, 0);
         registry.rebind(rmi_name, stub);
     }
 

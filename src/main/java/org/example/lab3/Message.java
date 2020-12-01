@@ -6,9 +6,9 @@ public class Message implements Serializable {
 
     public MessageType mt;
     public int r;
-    public boolean w;
+    public int w;
 
-    public Message(MessageType mt, int r, boolean w) {
+    public Message(MessageType mt, int r, int w) {
         this.mt = mt;
         this.r = r;
         this.w = w;

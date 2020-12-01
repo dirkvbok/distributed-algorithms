@@ -4,7 +4,9 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Process_Interface extends Remote {
+public interface ParticipantProcess_Interface extends Remote {
+
+    void start() throws RemoteException, NotBoundException;
 
     void broadcast(Message m) throws RemoteException, NotBoundException;
 

@@ -20,6 +20,11 @@ public class Server_Main {
 
             registry = LocateRegistry.createRegistry(1099);
 
+            // TODO: maybe run terminals from within IntelliJ
+//            // windows only
+//            Process p = Runtime.getRuntime().exec("cmd /c start cmd.exe && java -cp C:/Users/Dirk/Repositories/distributed-algorithms/target/classes/ org.example.lab3.ParticipantProcess_Main 0 1");
+
+
             // Wait for user to start consensus algorithm
             boolean start = false;
             Scanner userInput = new Scanner(System.in);
@@ -31,12 +36,15 @@ public class Server_Main {
                 if (!input.isEmpty()) {
                     start = true;
                     userInput.close();
+
+
                 }
             }
 
-            Process_Interface stub = (Process_Interface) registry.lookup(registry.list()[0]);
-            stub.broadcast(new Message(MessageType.NOTIFICATION, 1, true));
-
+            for (String rmi_name : registry.list()) {
+                ParticipantProcess_Interface stub = (ParticipantProcess_Interface) registry.lookup(rmi_name);
+                stub.start();
+            }
 
         } catch(Exception e) {
             e.printStackTrace();
