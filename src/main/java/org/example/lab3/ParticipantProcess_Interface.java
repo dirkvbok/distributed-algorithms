@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 
 public interface ParticipantProcess_Interface extends Remote {
 
-    void start() throws RemoteException, NotBoundException;
+    void start() throws RemoteException, NotBoundException, InterruptedException;
 
     void broadcast(Message m) throws RemoteException, NotBoundException;
 
