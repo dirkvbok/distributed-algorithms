@@ -4,7 +4,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class ParticipantProcess implements ParticipantProcess_Interface {
@@ -33,7 +32,7 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
         f = (int) Math.floor((n - 1) / 5.0);
         System.out.println("n: " + n + ", f: " + f);
 
-        outerForever:
+        // Do forever
         while(true) {
             System.out.println("\n-----------------------------------");
             System.out.println("Round " + r);
@@ -45,6 +44,7 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
 
             awaitNMessages();
 
+
             // Proposal phase
             System.out.println("\nPROPOSAL PHASE ROUND " + r + "\n");
             MaxW maxWN = messagesN.getMaxW(r);
@@ -54,12 +54,13 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
                 broadcast(new Message(MessageType.PROPOSAL, r, -1));
             }
 
-            // if decided then STOP
+            // If decided then STOP forever loop
             if (decided) {
-                break outerForever;
+                break;
             }
 
             awaitPMessages();
+
 
             // Decision phase
             System.out.println("\nDECISION PHASE ROUND " + r + "\n");
@@ -84,8 +85,6 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
         System.out.println("\nDONE! \nAgreement on message w = " + v + "\n");
     }
 
-
-
     @Override
     public void broadcast(Message m) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(1099);
@@ -99,9 +98,9 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
                 messagesP.storeMessage(m);
         }
 
+        // Send message to other processes with random delays up to 4 seconds
         for(String rmi_name : rmi_list) {
             if (!rmi_name.equals(rmi_my_name)) {
-                // Wait random seconds between 1 - 4
                 try {
                     Thread.sleep(random.nextInt(4000));
                 } catch (InterruptedException e) {
@@ -118,8 +117,8 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
     public synchronized void receive(Message message) {
         System.out.println(message.toString() + " [RECEIVE]");
 
+        // Store incoming messages
         switch(message.mt) {
-
             case NOTIFICATION:
                 messagesN.storeMessage(message);
                 break;
@@ -128,10 +127,12 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
                 messagesP.storeMessage(message);
                 break;
         }
-
     }
 
-    private void awaitNMessages() throws InterruptedException {
+    /**
+     * Await (n - f) N messages.
+     */
+    private void awaitNMessages() {
         System.out.println("Awaiting " + (n-f) + " N messages");
 
         while(true) {
@@ -144,7 +145,10 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
         }
     }
 
-    private void awaitPMessages() throws InterruptedException {
+    /**
+     * Await (n - f) P messages.
+     */
+    private void awaitPMessages() {
         System.out.println("Awaiting " + (n-f) + " P messages");
 
         while(true) {
@@ -156,6 +160,5 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
             }
         }
     }
-
 
 }

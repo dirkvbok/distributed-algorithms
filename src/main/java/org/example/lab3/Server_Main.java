@@ -24,11 +24,6 @@ public class Server_Main {
 
             registry = LocateRegistry.createRegistry(1099);
 
-            // TODO: maybe run terminals from within IntelliJ
-//            // windows only
-//            Process p = Runtime.getRuntime().exec("cmd /c start cmd.exe && java -cp C:/Users/Dirk/Repositories/distributed-algorithms/target/classes/ org.example.lab3.ParticipantProcess_Main 0 1");
-
-
             // Wait for user to start consensus algorithm
             boolean start = false;
             Scanner userInput = new Scanner(System.in);
@@ -43,6 +38,7 @@ public class Server_Main {
                 }
             }
 
+            // Start the algorithm for each process
             for (final String rmi_name : registry.list()) {
                 new Thread()
                 {

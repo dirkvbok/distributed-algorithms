@@ -13,9 +13,9 @@ public class RoundsMessageLists {
     }
 
     /**
-     *
-     * @param round
-     * @return
+     * Get size of message list for a certain round, add new round-list if needed.
+     * @param round round to get listsize of
+     * @return size of message list
      */
     public int size(int round) {
         addRoundIfNeeded(round);
@@ -33,9 +33,9 @@ public class RoundsMessageLists {
     }
 
     /**
-     * Check which message is received most.
+     * Check which message is received most, add new round-list if needed.
      * @param round round to check messages in
-     * @return 0 if count(w0) = max, 1 if count(w1) = max, -1 if equal
+     * @return max w and its count
      */
     public MaxW getMaxW(int round) {
         addRoundIfNeeded(round);
