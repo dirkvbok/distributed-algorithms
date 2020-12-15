@@ -30,7 +30,9 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
         Registry registry = LocateRegistry.getRegistry(1099);
         n = registry.list().length;
         f = (int) Math.floor((n - 1) / 5.0);
-        System.out.println("n: " + n + ", f: " + f);
+        System.out.println("Hi. I am honest!");
+        System.out.println("n: " + n + ", max f: " + f);
+        System.out.println("actual f: "); //todo find out actual f
 
         // Do forever
         while(true) {
@@ -82,7 +84,7 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
             r++;
         }
 
-        System.out.println("\nDONE! \nAgreement on message w = " + v + "\n");
+        System.out.println("\nDONE! \nAgreement on message w = " + v + " after round " + r + "\n");
     }
 
     @Override
