@@ -42,7 +42,6 @@ public class TraitorProcess implements ParticipantProcess_Interface {
     f = (int) Math.floor((n - 1) / 5.0);
     System.out.println("Hi. I am a traitor! My new v is " + this.v);
     System.out.println("n: " + n + ", max f: " + f);
-    System.out.println("actual f: "); //todo find out actual f
 
     // Do forever
     while(true) {
@@ -114,8 +113,8 @@ public class TraitorProcess implements ParticipantProcess_Interface {
       if (!rmi_name.equals(rmi_my_name)) {
         try {
           // NOTE: if we want to simulate that the traitor does not broadcast, we just let it sleep for long period
-          //Thread.sleep(random.nextInt(4000));
-          Thread.sleep(4000000);
+          Thread.sleep(random.nextInt(4000));
+//          Thread.sleep(4000000);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

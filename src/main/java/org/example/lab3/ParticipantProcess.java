@@ -32,7 +32,6 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
         f = (int) Math.floor((n - 1) / 5.0);
         System.out.println("Hi. I am honest!");
         System.out.println("n: " + n + ", max f: " + f);
-        System.out.println("actual f: "); //todo find out actual f
 
         // Do forever
         while(true) {
