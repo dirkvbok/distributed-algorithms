@@ -83,7 +83,8 @@ public class ParticipantProcess implements ParticipantProcess_Interface {
             r++;
         }
 
-        System.out.println("\nDONE! \nAgreement on message w = " + v + " after round " + r + "\n");
+        System.out.println("\nDONE! \nAgreement on message w = " + v + " after round " + r);
+        System.out.println("Any following messages are simply received, they do not alter the decision that is already made." + "\n");
     }
 
     @Override
